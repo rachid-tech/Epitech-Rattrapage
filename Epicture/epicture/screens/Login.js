@@ -1,9 +1,14 @@
 import * as React from 'react';
 import { WebView } from 'react-native-webview';
-import { isAuthentifiedToImgur, clientId } from '../src/imgurAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 let isAuthentified = false;
+
+function isConnected (imgurAuth) {
+    if (imgurAuth.access_token && imgurAuth.expires_in && imgurAuth.refresh_token)
+        return (true);
+    return (false);
+}
 
 function parseURLParams (url) {
     let regex = /[?&#]([^=#]+)=([^&#]*)/g,
@@ -20,14 +25,10 @@ function onNavigationStateChange (navigationState, navigation) {
     const url = navigationState.url
     const imgurAuth = parseURLParams(url);
 
-    // const [token, setToken] = React.useState("")
     
-    if (isAuthentifiedToImgur(imgurAuth) == true && isAuthentified == false) {
+    if (isConnected(imgurAuth) == true && isAuthentified == false) {
         isAuthentified = true;
-            AsyncStorage.setItem("token", JSON.stringify(imgurAuth)).then((value) => {//faire json.parse quand je vais get le token
-            //   if (value) {
-            //     setToken(value);
-            //     }
+            AsyncStorage.setItem("token", JSON.stringify(imgurAuth)).then((value) => {
             console.log(imgurAuth)
             navigation.reset({
                 index: 1,
@@ -38,18 +39,17 @@ function onNavigationStateChange (navigationState, navigation) {
 };
 
 
-function LoginWebView ({ navigation }) {
+function Login ({ navigation }) {
 
     return (
       <WebView
-        // incognito={true}
         scalesPageToFit
         source={{ uri: `https://api.imgur.com/oauth2/authorize?client_id=edba6e817df751a&response_type=token&state=APPLICATION_STATE` }}
-        onNavigationStateChange={navigationState => {
-            onNavigationStateChange(navigationState, navigation)
+        onNavigationStateChange={nav => {
+            onNavigationStateChange(nav, navigation)
         }}
       />
   )
 };
 
-export default LoginWebView;
+export default Login;

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Auth, getFavorites } from './imgurAPI';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -8,7 +7,7 @@ import Profil from '../screens/profil'
 import Search from '../screens/search'
 import Favourite from '../screens/favourites'
 
-function myTabs({ route }) {
+function AllPages({ route }) {
 
     const Tab = createBottomTabNavigator();
     return (
@@ -29,4 +28,4 @@ function myTabs({ route }) {
     );
 }
 
-export default myTabs;
+export default AllPages;

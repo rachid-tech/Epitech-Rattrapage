@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, TextInput, FlatList, Dimensions, Button, Text, Image, RefreshControl, ShadowPropTypesIOS, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TextInput, FlatList, Dimensions, Text, Image, RefreshControl, ShadowPropTypesIOS, TouchableOpacity } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios'
+import { Icon } from 'react-native-elements'
+import { Button } from 'react-native-elements';
 // import { Button } from 'react-native-paper';
 
 export default class Search extends Component {
@@ -49,34 +51,6 @@ export default class Search extends Component {
     }
     }
 
-     onEndReached = () => {
-        if (this.state.viral) {
-            this.setState({
-                viralPage: this.state.viralPage + 1
-            })
-            let section = "";
-            let sort = "";
-            if (this.state.viralPopular) {
-                section = "hot";
-                sort = "viral";
-            } else if (this.state.viralNew) {
-                section = "hot";
-                sort = "top";
-            } else if (this.state.userPopular) {
-                section = "user";
-                sort = "viral";
-            } else if (this.state.userNew) {
-                section = "user";
-                sort = "top";
-            }
-            this.getGallery(section, sort);
-        } else if (this.state.following) {
-            this.setState({
-                followingPage: this.state.followingPage + 1
-            })
-            this.getFollowingGallery();
-        }
-    }
 
     isfavorite(link, index) {
         //https://api.imgur.com/3/image/{{imageHash}}/favorite
@@ -110,36 +84,19 @@ export default class Search extends Component {
         console.log(link)
     }
 
-    vote(link, index) {
+    vote(link, vote, obj) {
         //https://api.imgur.com/3/image/{{imageHash}}/favorite
-        axios("https://api.imgur.com/3/image/"+ link +"/favorite", {
+        axios("https://api.imgur.com/3/gallery/" + link + "/vote/"+ vote, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${this.state.token.access_token}`
             }
         })
         .then((response) => {
-            // console.log(response)
-            if (response.data.success == true) {
-                return response.data.data;
-            } else {
-                return null;
-            }
+            console.log(response)
         })
         .catch((error) => console.error(error))
-    
-        var state = this.state
-        if (state.isFavorite === "favorite") {
-            state.photos[index].favorite = true
-            state.isFavorite = "enleve"
-        }
-        else {
-            state.photos[index].favorite = false
-            state.isFavorite = "favorite"
-            
-        }
-        this.setState(state)
-        console.log(link)
+        console.log(obj.vote)   
     }
 
     upvote(link) {
@@ -149,6 +106,7 @@ export default class Search extends Component {
     render() {
     return (
       <View >
+          <View style={{flexDirection:'row'}}>
                 <TextInput
                     style={{marginLeft: 5,
                       marginRight: 5,
@@ -159,7 +117,13 @@ export default class Search extends Component {
                     placeholder="search a picture"
                     onChangeText={(text) => this.setState({searchValue: text})}
                 />
-      <Button style={{margin: 5}} title="button" onPress={() => this.activeSearch(this.state.searchValue)}>Search</Button>
+                <TouchableOpacity onPress={() => this.activeSearch(this.state.searchValue)} style={styles.SearchButtonText}>
+                    <Text>
+                        search
+                    </Text>
+                </TouchableOpacity>
+                </View>
+      {/* <Button style={styles.SearchButtonText} title="button" onPress={() => this.activeSearch(this.state.searchValue)}>Search</Button> */}
       <FlatList
                     data={this.state.photos}
                     renderItem={({ item, index }) => 
@@ -167,11 +131,22 @@ export default class Search extends Component {
                     <View>
                         <Image style={{height: 200, width: 200}} source={{uri: "https://i.imgur.com/" + item.cover + ".jpg" }}/>
                         <Text style={{flex: 1, margin: 5, marginLeft: 10, fontSize: 16, fontWeight: "bold",}}>{item.title}</Text>
-                        <TouchableOpacity onPress={() => {this.isfavorite(item.cover, index)}}>
-                            <Text >{item.favorite ? "enleve" : "favorite"}</Text>
+                        
+                        <View style={{flexDirection:'row'}}>
+                        
+                        <TouchableOpacity onPress={() => {this.isfavorite(item.cover, index)}} style={styles.Fav}>
+                            <Text style={styles.appButtonText}>{item.favorite ? "enleve" : "favorite"}</Text>
                         </TouchableOpacity>
-                        <Button title="upvote"></Button>
-                        <Button title="downvote"></Button>
+
+                        <TouchableOpacity onPress={() => {this.vote(item.cover, "up", item)}} style={styles.UPVote}>
+                            <Text style={styles.appButtonText}>UP vote</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => {this.vote(item.cover, "down", item)}} style={styles.DownVote}>
+                            <Text style={styles.appButtonText}>Down</Text>
+                        </TouchableOpacity>
+
+                        </View> 
                     </View>
                     : <React.Fragment />
                 }
@@ -180,3 +155,64 @@ export default class Search extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+    // ...
+    appButtonContainer: {
+      elevation: 8,
+      backgroundColor: "#FFF700",
+      borderRadius: 10,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+      height: 20,
+      width: 20,
+      marginRight: 5
+    },
+    appButtonText: {
+      fontSize: 14,
+      color: "#000",
+      fontWeight: "bold",
+      alignSelf: "center",
+      textTransform: "uppercase"
+    },
+    SearchButtonText: {
+        elevation: 8,
+        backgroundColor: "#3374FF",
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        height: 40,
+        width: 70,
+        marginRight: 5
+      },
+      UPVote: {
+        elevation: 8,
+        backgroundColor: "#33FF3F",
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        height: 30,
+        width: 100,
+        marginRight: 5
+      },
+      DownVote: {
+        elevation: 8,
+        backgroundColor: "#FF3633",
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        height: 30,
+        width: 100,
+        marginRight: 5
+      },
+      Fav: {
+        elevation: 8,
+        backgroundColor: "#F6FF33",
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        height: 30,
+        width: 100,
+        marginRight: 5
+      }
+  });

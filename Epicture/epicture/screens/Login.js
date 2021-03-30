@@ -38,13 +38,12 @@ function onNavigationStateChange (navigationState, navigation) {
     }
 };
 
-
 function Login ({ navigation }) {
 
     return (
       <WebView
         scalesPageToFit
-        source={{ uri: `https://api.imgur.com/oauth2/authorize?client_id=edba6e817df751a&response_type=token&state=APPLICATION_STATE` }}
+        source={{ uri: `https://api.imgur.com/oauth2/authorize?client_id=81e22870b5e605b&response_type=token&state=APPLICATION_STATE` }}
         onNavigationStateChange={nav => {
             onNavigationStateChange(nav, navigation)
         }}

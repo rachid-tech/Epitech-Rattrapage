@@ -44,7 +44,6 @@ export default class Search extends Component {
         console.log("No pics founded");
         return null;
     } else {
-        console.log("Pics founded");
         // console.log(pics[0].link)
         this.setState({photos: pics})
         // return pics;
@@ -86,7 +85,7 @@ export default class Search extends Component {
 
     vote(link, vote, obj) {
         //https://api.imgur.com/3/image/{{imageHash}}/favorite
-        axios("https://api.imgur.com/3/gallery/" + link + "/vote/"+ vote, {
+        axios("https://api.imgur.com/post/v1/posts/" + link + "/favorite?client_id={client_id}", {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${this.state.token.access_token}`

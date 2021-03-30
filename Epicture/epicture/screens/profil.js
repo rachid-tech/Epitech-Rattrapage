@@ -40,10 +40,44 @@ export default class Profil extends Component {
         photos: []
     
     }
-    async componentDidMount(){
+
+    componentWillUnmount() {
+        this.focus();
+      }
+      
+      async componentDidMount(){
         var token = await AsyncStorage.getItem("token")
         token = JSON.parse(token)
         this.setState({token: token})
+        this.focus = this.props.navigation.addListener('focus', async () => {
+            // do something
+            var pics = await (
+                axios(`https://api.imgur.com/3/account/${this.state.token.account_username}/images/`, {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${this.state.token.access_token}`
+                    }
+                })
+                .then((response) => {
+                    // console.log(response)
+                    if (response.data.success == true) {
+                        return response.data.data;
+                    } else {
+                        return null;
+                    }
+                })
+                .catch((error) => console.error(error))
+            );    
+            if (pics[0] == null) {
+                console.log("No pics founded");
+                return null;
+            } else {
+                // console.log(pics[0].link)
+                this.setState({photos: pics})
+                // return pics;
+            }
+        
+        });
 
         var pics = await (
             axios(`https://api.imgur.com/3/account/${this.state.token.account_username}/images/`, {
@@ -78,9 +112,9 @@ export default class Profil extends Component {
 
     render() {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#707070' }}>
         <Text>Profil Screen</Text>
-        {this.state.photos[0] != null && console.log(this.state.photos[0].link)}
+        {/* {this.state.photos[0] != null && console.log(this.state.photos[0].link)} */}
         {/* <Image source={{uri:JSON.parse(this.state.photos[0]).link}}/> */}
         {/* { this.state.photos[0] != null && <Image style={{height: 200, width: 200}} source={{uri: this.state.photos[0].link}}/>} */}
         <FlatList
@@ -90,7 +124,7 @@ export default class Profil extends Component {
                         <Image style={{height: 200, width: 200}} source={{uri: item.link}}/>
                         {/* <Text style={styles.title}>{item.title}</Text> */}
                     </View>}
-                />
+                />  
       </View>
     )
   }

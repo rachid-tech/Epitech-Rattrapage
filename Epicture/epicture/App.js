@@ -5,15 +5,15 @@ import * as React from 'react';
 import Login from './screens/Login';
 import AllPages from './src/allPages';
 
-const stackNavigator = createStackNavigator();
+const nav = createStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <stackNavigator.Navigator>
-        <stackNavigator.Screen name="Authenticate on Imgur" component={Login} />
-        <stackNavigator.Screen name="Epicture" component={AllPages} />
-      </stackNavigator.Navigator>
+      <nav.Navigator screenOptions={{headerShown: false }}>
+        <nav.Screen name="Authenticate on Imgur" component={Login} />
+        <nav.Screen name="Epicture" component={AllPages}/>
+      </nav.Navigator>
     </NavigationContainer>
   );
 }

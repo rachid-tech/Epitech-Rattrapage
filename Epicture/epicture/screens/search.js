@@ -85,17 +85,19 @@ export default class Search extends Component {
 
     vote(link, vote, obj) {
         //https://api.imgur.com/3/image/{{imageHash}}/favorite
-        axios("https://api.imgur.com/post/v1/posts/" + link + "/favorite?client_id={client_id}", {
+        console.log(obj)
+        axios("https://api.imgur.com/post/v1/posts/" + obj.id + "/vote/" + vote, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${this.state.token.access_token}`
             }
         })
         .then((response) => {
-            console.log(response)
+            // console.log(response)
+            console.log("ok")
+            
         })
-        .catch((error) => console.error(error))
-        console.log(obj.vote)   
+        .catch((error) => console.error("error"))
     }
 
     upvote(link) {
@@ -104,7 +106,7 @@ export default class Search extends Component {
 
     render() {
     return (
-      <View >
+      <View style={{marginTop: 40, flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#707070'}} >
           <View style={{flexDirection:'row'}}>
                 <TextInput
                     style={{marginLeft: 5,
@@ -127,14 +129,14 @@ export default class Search extends Component {
                     data={this.state.photos}
                     renderItem={({ item, index }) => 
                     item.cover !== undefined ? 
-                    <View>
+                    <View style={{marginRight: 50}}>
                         <Image style={{height: 200, width: 200}} source={{uri: "https://i.imgur.com/" + item.cover + ".jpg" }}/>
                         <Text style={{flex: 1, margin: 5, marginLeft: 10, fontSize: 16, fontWeight: "bold",}}>{item.title}</Text>
                         
-                        <View style={{flexDirection:'row'}}>
+                        <View style={{flexDirection:'row', marginRight: 50}}>
                         
                         <TouchableOpacity onPress={() => {this.isfavorite(item.cover, index)}} style={styles.Fav}>
-                            <Text style={styles.appButtonText}>{item.favorite ? "enleve" : "favorite"}</Text>
+                        <Text style={styles.appButtonText}>{item.favorite ? "enleve" : "favorite"}</Text>                            
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => {this.vote(item.cover, "up", item)}} style={styles.UPVote}>
@@ -143,6 +145,10 @@ export default class Search extends Component {
 
                         <TouchableOpacity onPress={() => {this.vote(item.cover, "down", item)}} style={styles.DownVote}>
                             <Text style={styles.appButtonText}>Down</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => {this.vote(item.cover, "veto", item)}} style={styles.VetoVote}>
+                            <Text style={styles.appButtonText}>Veto</Text>
                         </TouchableOpacity>
 
                         </View> 
@@ -197,6 +203,16 @@ const styles = StyleSheet.create({
       DownVote: {
         elevation: 8,
         backgroundColor: "#FF3633",
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        height: 30,
+        width: 100,
+        marginRight: 5
+      },
+      VetoVote: {
+        elevation: 8,
+        backgroundColor: "#544747",
         borderRadius: 10,
         paddingVertical: 10,
         paddingHorizontal: 12,

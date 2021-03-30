@@ -112,15 +112,15 @@ export default class Favourite extends Component {
 
     render() {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Favourite Screen</Text>
-        {this.state.photos[0] != null && console.log(this.state.photos[0].link)}
+      <View style={{marginTop: 40, flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#707070'}}>
+        <Text>Favourite</Text>
+        {/* {this.state.photos[0] != null && console.log(this.state.photos[0].link)} */}
         {/* <Image source={{uri:JSON.parse(this.state.photos[0]).link}}/> */}
         {/* { this.state.photos[0] != null && <Image style={{height: 200, width: 200}} source={{uri: this.state.photos[0].link}}/>} */}
         <FlatList
                     data={this.state.photos}
                     renderItem={({ item , index}) => 
-                    item.cover !== undefined ? 
+                    item.cover !== undefined && item.favorite === true? 
                     <View>
                         <Image style={{height: 200, width: 200}} source={{uri: "https://i.imgur.com/" + item.cover + ".jpg" }}/>
                         <Text style={{flex: 1, margin: 5, marginLeft: 10, fontSize: 16, fontWeight: "bold",}}>{item.title}</Text>

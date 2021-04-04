@@ -1,38 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, Image, StyleSheet, FlatList, Dimensions, RefreshControl, ScrollView, ImageBackground } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const screenDimensions = Dimensions.get("screen");
 import axios from 'axios'
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        marginTop: 20,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    nothing: {
-        marginTop: 200,
-        margin: 50,
-        width: (screenDimensions.width - 250),
-        height: (screenDimensions.height - 700),
-    },
-    item: {
-        marginLeft: 5,
-        marginRight: 5,
-        width: (screenDimensions.width - 10),
-        height: (screenDimensions.height - 400),
-        borderColor: "#000000",
-        borderWidth: 1,
-    },
-    title: {
-        flex: 1,
-        margin: 5,
-        marginLeft: 10,
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-});
 
 export default class Profil extends Component {
     state = {
@@ -112,7 +81,7 @@ export default class Profil extends Component {
 
     render() {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#707070' }}>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#707070', marginTop: 40 }}>
         <Text>Profil Screen</Text>
         {/* {this.state.photos[0] != null && console.log(this.state.photos[0].link)} */}
         {/* <Image source={{uri:JSON.parse(this.state.photos[0]).link}}/> */}
@@ -122,6 +91,8 @@ export default class Profil extends Component {
                     renderItem={({ item }) => 
                     <View>
                         <Image style={{height: 200, width: 200}} source={{uri: item.link}}/>
+                        <Text style={{flex: 1, margin: 5, marginLeft: 10, fontSize: 16, fontWeight: "bold",}}>{item.title}</Text>
+
                         {/* <Text style={styles.title}>{item.title}</Text> */}
                     </View>}
                 />  

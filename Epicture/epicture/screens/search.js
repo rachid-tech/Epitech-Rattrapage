@@ -103,8 +103,9 @@ export default class Search extends Component {
     upvote(link) {
 //https://api.imgur.com/3/gallery/{{galleryHash}}/votes
     }
-
+    
     render() {
+        const numColumns = 2
     return (
       <View style={{marginTop: 40, flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#707070'}} >
           <View style={{flexDirection:'row'}}>
@@ -202,7 +203,7 @@ const styles = StyleSheet.create({
       },
       DownVote: {
         elevation: 8,
-        backgroundColor: "#FF3633",
+        backgroundColor: "#C24435",
         borderRadius: 10,
         paddingVertical: 10,
         paddingHorizontal: 12,
